@@ -4,15 +4,15 @@ from fastapi.testclient import TestClient
 from fastapi import FastAPI
 
 import setup
-import models
+
 
 from database import engine
 
 from routers import admin, user
 from routers import common as common_router
 
-
-models.Base.metadata.create_all(bind=engine)
+from database import Base
+Base.metadata.create_all(bind=engine)
 setup.create_admins()
 app = FastAPI()
 

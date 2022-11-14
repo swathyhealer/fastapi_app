@@ -3,11 +3,16 @@ from fastapi import HTTPException, Depends, status
 
 from helpers.common import CommonFunction
 from jose import JWTError
-import schemas
+
 from sqlalchemy.orm import Session
-from database_operations import get_user
+
+from db_op import user as db_user_op
 from authentication_scheme import auth2_scheme
-import database_operations
+from db_op import admin as db_admin_op
+from db_op import book as db_book_op
+from models import user as user_model
+from models import book as book_model
+from schemas import common as common_schema
 
 
 class DependencyFunc:
@@ -33,10 +38,10 @@ class DependencyFunc:
 
             if username is None:
                 raise credentials_exception
-            token_data = schemas.TokenData(username=username)
+            token_data = common_schema.TokenData(username=username)
         except JWTError:
             raise credentials_exception
-        general_user = get_user(db=db, tokendata=token_data)
+        general_user = db_user_op.get_user(db=db, tokendata=token_data)
         if general_user is None:
             raise credentials_exception
         else:
@@ -46,8 +51,8 @@ class DependencyFunc:
             # else:
             #     return general_user.user
 
-    async def get_owner(book_id: str, user: schemas.models.User = Depends(get_current_user), db: Session = Depends(get_db)):
-        book: schemas.models.Book = database_operations.get_book(
+    async def get_owner(book_id: str, user: user_model.User = Depends(get_current_user), db: Session = Depends(get_db)):
+        book: book_model.Book = db_book_op.get_book(
             db=db, book_id=book_id)
         if book == None:
             raise HTTPException(status_code=400, detail="invalid book id")
@@ -69,10 +74,10 @@ class DependencyFunc:
 
             if username is None:
                 raise credentials_exception
-            token_data = schemas.TokenData(username=username)
+            token_data = common_schema.TokenData(username=username)
         except JWTError:
             raise credentials_exception
-        admin = database_operations.get_admin(db=db, tokendata=token_data)
+        admin = db_admin_op.get_admin(db=db, tokendata=token_data)
         if admin is None:
             raise credentials_exception
         else:

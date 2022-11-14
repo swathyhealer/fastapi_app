@@ -1,6 +1,8 @@
-import models
+
 import json
 from database import SessionLocal
+
+from models import admin as admin_model
 
 
 def create_admins():
@@ -13,8 +15,8 @@ def create_admins():
     db = SessionLocal()
     for admin in admins:
 
-        admin = models.Admin(**admin)
-        if not db.query(models.Admin).filter(models.Admin.admin_id == admin.admin_id).first():
+        admin = admin_model.Admin(**admin)
+        if not db.query(admin_model.Admin).filter(admin_model.Admin.admin_id == admin.admin_id).first():
 
             db.add(admin)
             db.commit()

@@ -1,27 +1,25 @@
 
-from typing import List, Union
-import database_operations
-from fastapi.testclient import TestClient
+from db_op import common as db_common_op
 
-from fastapi import FastAPI, HTTPException, Depends
+
+from fastapi import HTTPException, Depends
 from sqlalchemy.orm import Session
 from fastapi import APIRouter
 
 
-import schemas
-
 from fastapi.security import OAuth2PasswordRequestForm
 from helpers.depends import DependencyFunc
+from schemas import common as common_schema
 
 
 router = APIRouter()
 
 
-@router.post("/login", response_model=schemas.AccessToken)
+@router.post("/login", response_model=common_schema.AccessToken)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(DependencyFunc.get_db)):
     # to catch the email validation error
     try:
-        log_cred = schemas.Logincred(
+        log_cred = common_schema.Logincred(
             id=form_data.username, password=str(form_data.password))
     except Exception as e:
         raise HTTPException(
@@ -29,5 +27,5 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
             detail={"email validation": str(e)},
 
         )
-    accesstoken = database_operations.authenticate(db=db, log_cred=log_cred)
+    accesstoken = db_common_op.authenticate(db=db, log_cred=log_cred)
     return accesstoken

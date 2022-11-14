@@ -1,20 +1,16 @@
-import database_operations
 
 
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
 
-import models
-import schemas
-
-
 from helpers.depends import DependencyFunc
-
+from db_op import user as db_user_op
 
 from helpers.db_based_user_input_validator import Customvalidator
 from fastapi import APIRouter
-
+from models import admin as admin_model
+from schemas import user as user_schema
 router = APIRouter(
     prefix="/admin",
     tags=["admin"],
@@ -23,7 +19,7 @@ router = APIRouter(
 )
 
 
-@router.post("/user/create", response_model=schemas.UserOut)
-async def create_user(*, admin: models.Admin = Depends(DependencyFunc.get_admin), user: schemas.UserIn, db: Session = Depends(DependencyFunc.get_db)):
+@router.post("/user/create", response_model=user_schema.UserOut)
+async def create_user(*, admin: admin_model.Admin = Depends(DependencyFunc.get_admin), user: user_schema.UserIn, db: Session = Depends(DependencyFunc.get_db)):
     Customvalidator.email_already_exists(db=db, email=user.email)
-    return database_operations.create_user(db=db, user=user, admin_id=admin.admin_id)
+    return db_user_op.create_user(db=db, user=user, admin_id=admin.admin_id)

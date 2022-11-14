@@ -1,8 +1,9 @@
 import json
 from typing import Union
 from datetime import timedelta, datetime
-from jose import  jwt
-import schemas
+from jose import jwt
+
+from schemas import common as common_schema
 
 
 class CommonFunction:
@@ -15,11 +16,11 @@ class CommonFunction:
         return data
 
     @staticmethod
-    def get_jwt_config() -> schemas.JwtConfig:
+    def get_jwt_config() -> common_schema.JwtConfig:
         config: dict = CommonFunction.read_json(
             "/home/swathysa@genproresearch.net/Desktop/training/sample_project/config.json")
         jwt_config = config["jwt_token"]
-        return schemas.JwtConfig(**jwt_config)
+        return common_schema.JwtConfig(**jwt_config)
 
     @staticmethod
     def create_access_token(secret_key: str, algorithm: str, data: dict, expires_delta: Union[timedelta, None] = None):
@@ -37,7 +38,3 @@ class CommonFunction:
         payload = jwt.decode(token, jwt_config.secret_key,
                              algorithms=[jwt_config.algorithm])
         return payload
-
-    # @staticmethod
-    # def convert_sqlalch_obj_to_dict(obj):
-    #     for i
