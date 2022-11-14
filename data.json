@@ -1,0 +1,9 @@
+{
+    "admins": [
+        {
+            "admin_id": "1",
+            "email": "admin@gmail.com",
+            "hashed_password": "hashed_password"
+        }
+    ]
+}
