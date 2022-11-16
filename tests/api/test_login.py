@@ -1,22 +1,36 @@
-from main import client
+
 
 import pytest
 
-
+from copy import copy
 class TestLogin:
-    def test_admin_login(self, admin_login_cred, create_user_initialization, user_login_initialization):
-        json_body = create_user_initialization
-        token_response = client.post("/login", data=admin_login_cred)
-        access_token = token_response.json()["access_token"]
-        response = client.post("/admin/user/create", json=json_body,
-                               headers={"Authorization": f"Bearer {access_token}"})
-        login_data = {
-            "username": json_body["email"],
-            "password": json_body["password"]
-        }
+    def test_admin_login(self, admin_login):
+        access_token=admin_login
+        assert type(access_token)== str
 
-        response = client.post("/login", data=login_data)
+
+    def test_user_login(self,user_login):
+        access_token=user_login
+        assert type(access_token)== str
+    def test_login_unauthenticate(self,create_user,get_client):
+        create_user_response=create_user[0]
+        assert create_user_response.status_code==200
+        #NOTE: need shallow copy. otherwise data is getting change with each function
+        user_data=create_user[1].copy()
+        username=user_data.pop("email")
+        user_data["username"]=username
+        user_data["password"]=user_data["password"]+"_fail"
         
-        assert response.status_code == 200
-        assert response.json() != {}
-        assert "access_token" in response.json().keys()
+        response = get_client.post("/login", data=user_data)
+        assert response.status_code==401
+
+    def test_login_email_validation_fail(self,create_user,get_client):
+
+        create_user_response=create_user[0]
+        assert create_user_response.status_code==200
+        #NOTE: need shallow copy. otherwise data is getting change with each function
+        user_data=create_user[1].copy()
+        username=user_data.pop("email")
+        user_data["username"]=username+".fail#"
+        response = get_client.post("/login", data=user_data)
+        assert response.status_code==422

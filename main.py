@@ -1,5 +1,5 @@
 
-from fastapi.testclient import TestClient
+
 
 from fastapi import FastAPI
 
@@ -16,7 +16,7 @@ Base.metadata.create_all(bind=engine)
 setup.create_admins()
 app = FastAPI()
 
-client = TestClient(app)
+# client = TestClient(app)
 app.include_router(common_router.router)
 app.include_router(admin.router)
 

@@ -1,9 +1,9 @@
 {
     "admins": [
         {
-            "admin_id": "1",
-            "email": "admin@gmail.com",
-            "hashed_password": "hashed_password"
+            "admin_id": "2",
+            "email": "mainadmin@gmail.com",
+            "password": "hashed_password"
         }
     ]
 }

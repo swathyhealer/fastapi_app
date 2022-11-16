@@ -17,8 +17,9 @@ class CommonFunction:
 
     @staticmethod
     def get_jwt_config() -> common_schema.JwtConfig:
-        config: dict = CommonFunction.read_json(
-            "/home/swathysa@genproresearch.net/Desktop/training/sample_project/config.json")
+        config_json_path="config.json"
+        config: dict = CommonFunction.read_json(config_json_path
+            )
         jwt_config = config["jwt_token"]
         return common_schema.JwtConfig(**jwt_config)
 
@@ -32,7 +33,8 @@ class CommonFunction:
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, secret_key, algorithm=algorithm)
         return encoded_jwt
-
+        
+    @staticmethod
     def decode_token(token: str):
         jwt_config = CommonFunction.get_jwt_config()
         payload = jwt.decode(token, jwt_config.secret_key,
