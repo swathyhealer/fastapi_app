@@ -1,6 +1,7 @@
+from typing import Union
+
 from pydantic import BaseModel, EmailStr
 
-from typing import Union
 from models import admin as admin_model
 from models import user as user_model
 

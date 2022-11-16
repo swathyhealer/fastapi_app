@@ -1,9 +1,9 @@
 from passlib.context import CryptContext
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class HashFunctions:
-
     @staticmethod
     def bcrypt_hasher(password: str) -> str:
         return pwd_context.hash(password)

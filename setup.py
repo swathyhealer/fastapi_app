@@ -1,9 +1,9 @@
-
 import json
-from database import SessionLocal
 
-from models import admin as admin_model
+from database import SessionLocal
 from helpers.hash import HashFunctions
+from models import admin as admin_model
+
 
 def create_admins():
 
@@ -14,11 +14,15 @@ def create_admins():
     admins: list = data["admins"]
     db = SessionLocal()
     for admin in admins:
-        password=admin.pop("password")
-        hashed_password=HashFunctions.bcrypt_hasher(password=password)
-        admin["hashed_password"]=hashed_password
+        password = admin.pop("password")
+        hashed_password = HashFunctions.bcrypt_hasher(password=password)
+        admin["hashed_password"] = hashed_password
         admin = admin_model.Admin(**admin)
-        if not db.query(admin_model.Admin).filter(admin_model.Admin.admin_id == admin.admin_id).first():
+        if (
+            not db.query(admin_model.Admin)
+            .filter(admin_model.Admin.admin_id == admin.admin_id)
+            .first()
+        ):
 
             db.add(admin)
             db.commit()
