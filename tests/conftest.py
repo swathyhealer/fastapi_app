@@ -83,14 +83,14 @@ def create_alternate_user(admin_login):
         "/admin/user/create",
         json=user_data,
     )
-    print(admin_login.__dict__)
+
     assert response.status_code == 200
     return user_data
 
 
 @pytest.fixture(scope="module")
 def alternate_user_login(create_alternate_user):
-    # get_client:TestClient=create_alternate_user[0]
+
     # NOTE: need shallow copy. otherwise data is getting change with each function
     user_data = create_alternate_user.copy()
     username = user_data.pop("email")
